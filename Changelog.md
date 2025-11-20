@@ -66,6 +66,7 @@ All notable changes to the Accessibility Widget project will be documented in th
 - Color blindness filters may have slight performance impact on very large pages
 - TTS requires browser support for Web Speech API
 - Some older browsers may not support all features
+- Widget Sticks to the Bottom when on all of the color blindness settings and on High Contrast
 
 ---
 
