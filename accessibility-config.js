@@ -37,6 +37,12 @@ var AccessibilityConfig = {
     // Enable reading guide (true/false)
     readingGuide: false,
 
+    // Enable reading mask - hides text below reading position (true/false)
+    readingMask: false,
+
+    // Enable text highlight - highlights text as you read (true/false)
+    textHighlight: false,
+
     // Stop animations (true/false)
     stopAnimations: false,
 
@@ -55,6 +61,9 @@ var AccessibilityConfig = {
     ttsVolume: 1.0,
 
     // TTS voice (empty string for default, or specific voice name)
-    ttsVoice: ''
+    ttsVoice: 'default',
+    
+    // TTS language: 'en' (English), 'es' (Español), 'de' (Deutsch), 'fr' (Français), 'zh' (中文/Mandarin), 'ko' (한국어), 'no' (Norsk)
+    ttsLanguage: 'en'
 };
 
