@@ -38,7 +38,7 @@ All notable changes to the Accessibility Widget project will be documented in th
   - JavaScript API for programmatic control
   - Configuration file for customization
   - CDN support via jsDelivr
-  - WordPress compatibility
+  - WordPress compatibility (Upcomming Plugin)
   - Example files (HTML & PHP)
   
 - **Documentation**:
@@ -49,7 +49,7 @@ All notable changes to the Accessibility Widget project will be documented in th
   - Example code snippets
 
 ### Technical Details
-- Pure JavaScript and CSS (no dependencies)
+- Pure JavaScript and CSS (no dependencies) (You can change if you want to use Box Icons)
 - Self-contained plugin (no server-side configuration)
 - Responsive design (desktop and mobile)
 - Browser compatibility (Chrome, Firefox, Safari, Edge)
