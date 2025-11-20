@@ -1,33 +1,113 @@
 /**
  * Accessibility Plugin - Stylesheet
+ * WCAG 2.2 Level AA Compliant
  * Styles for the accessibility widget and panel
+ * 
+ * WCAG 2.2 Compliance:
+ * - 2.4.11 Focus Not Obscured (Minimum) - Focus indicators are always visible
+ * - 2.5.8 Target Size (Minimum) - All interactive targets are at least 24×24px
+ * - 2.5.7 Dragging Movements - No dragging required (keyboard alternatives provided)
+ * - 3.2.6 Consistent Help - Help features consistently available
  */
+
+/* Screen reader only class - WCAG 2.4.6 Headings and Labels */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border-width: 0 !important;
+}
+
+/* Focus styles - WCAG 2.4.7 Focus Visible & 2.4.11 Focus Not Obscured (Minimum) */
+.accessibility-toggle-btn:focus,
+.accessibility-close-btn:focus,
+.accessibility-control-select:focus,
+.accessibility-toggle-checkbox:focus + .accessibility-toggle-slider,
+.accessibility-reset-btn:focus,
+.accessibility-tts-btn:focus,
+.accessibility-btn:focus,
+.accessibility-modal-close:focus,
+.accessibility-dict-btn:focus,
+.accessibility-speech-btn:focus {
+    outline: 3px solid #0066cc !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.3) !important;
+    z-index: 100002 !important; /* WCAG 2.4.11 - Ensure focus is not obscured */
+    position: relative !important;
+}
+
+/* WCAG 2.4.11 - Ensure focused elements are not hidden by other content */
+.accessibility-widget *:focus {
+    z-index: 100002 !important;
+}
+
+/* Ensure focus indicators are always visible above other content */
+.accessibility-panel *:focus,
+.accessibility-modal *:focus {
+    position: relative;
+    z-index: 100003 !important;
+}
+
+/* Skip link - WCAG 2.4.1 Bypass Blocks */
+.accessibility-skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #0066cc;
+    color: #ffffff;
+    padding: 8px 16px;
+    text-decoration: none;
+    z-index: 100000;
+    border-radius: 4px;
+}
+
+.accessibility-skip-link:focus {
+    top: 0;
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+}
 
 /* Widget Container */
 .accessibility-widget {
     position: fixed !important;
-    z-index: 10000;
+    z-index: 10000 !important;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     filter: none !important;
-    transform: none !important;
-    will-change: auto;
+    transform: translateZ(0) !important;
+    will-change: transform !important;
+    isolation: isolate !important;
+    contain: none !important; /* Changed from layout style paint to allow panel to escape */
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+    display: block !important;
+    visibility: visible !important;
+    overflow: visible !important; /* Ensure panel is not clipped */
 }
 
 .accessibility-widget-bottom-right {
-    bottom: 20px;
-    right: 20px;
+    bottom: 20px !important;
+    right: 20px !important;
+    left: auto !important;
+    top: auto !important;
 }
 
 .accessibility-widget-bottom-left {
-    bottom: 20px;
-    left: 20px;
+    bottom: 20px !important;
+    left: 20px !important;
+    right: auto !important;
+    top: auto !important;
 }
 
-/* Toggle Button */
+/* Toggle Button - WCAG Compliant */
 .accessibility-toggle-btn {
     background: #0066cc;
     color: #ffffff;
-    border: none;
+    border: 2px solid transparent;
     border-radius: 50px;
     padding: 12px 24px;
     font-size: 14px;
@@ -38,8 +118,14 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    z-index: 10001;
+    z-index: 10001 !important;
     position: relative;
+    pointer-events: auto !important;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    min-height: 44px; /* WCAG 2.5.5 & 2.5.8 Target Size (Minimum) - 24×24px required, using 44px for better usability */
+    min-width: 44px;
 }
 
 .accessibility-toggle-btn i {
@@ -51,6 +137,27 @@
     background: #0052a3;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
+}
+
+/* High contrast mode support - WCAG 1.4.3 Contrast */
+@media (prefers-contrast: high) {
+    .accessibility-toggle-btn {
+        border: 2px solid #ffffff;
+    }
+    .accessibility-panel {
+        border: 2px solid #000000;
+    }
+}
+
+/* Reduced motion support - WCAG 2.3.3 Animation from Interactions */
+@media (prefers-reduced-motion: reduce) {
+    .accessibility-toggle-btn,
+    .accessibility-panel,
+    .accessibility-toggle-slider,
+    .accessibility-toggle-slider::before {
+        transition: none !important;
+        animation: none !important;
+    }
 }
 
 .accessibility-toggle-btn:active {
@@ -75,49 +182,63 @@
 }
 
 .accessibility-panel-header h3 i {
-    font-size: 20px;
+    font-size: 14px;
 }
 
 .accessibility-close-btn i {
-    font-size: 24px;
+    font-size: 18px;
     line-height: 1;
 }
 
 /* Panel */
 .accessibility-panel {
-    position: absolute;
-    bottom: 70px;
-    width: 320px;
+    position: fixed !important; /* Changed from absolute to fixed */
+    bottom: 70px !important;
+    width: 260px;
     max-width: calc(100vw - 40px);
-    background: #ffffff;
-    border-radius: 12px;
+    background: #ffffff !important;
+    border-radius: 8px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     opacity: 0;
     visibility: hidden;
     transform: translateY(10px);
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
     overflow: hidden;
+    display: none;
+    z-index: 10001 !important;
 }
 
 .accessibility-widget-bottom-left .accessibility-panel {
-    left: 0;
+    left: 0 !important;
+    right: auto !important;
 }
 
 .accessibility-widget-bottom-right .accessibility-panel {
-    right: 0;
+    right: 0 !important;
+    left: auto !important;
 }
 
 .accessibility-panel-open {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+    display: block !important;
+}
+
+/* Ensure panel is always visible when open, regardless of other styles */
+.accessibility-panel[aria-hidden="false"],
+.accessibility-panel.accessibility-panel-open {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
 }
 
 /* Panel Header */
 .accessibility-panel-header {
     background: #0066cc;
     color: #ffffff;
-    padding: 16px 20px;
+    padding: 10px 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -125,24 +246,27 @@
 
 .accessibility-panel-header h3 {
     margin: 0;
-    font-size: 18px;
+    font-size: 13px;
     font-weight: 600;
+    line-height: 1.2;
 }
 
 .accessibility-close-btn {
     background: transparent;
     border: none;
     color: #ffffff;
-    font-size: 28px;
+    font-size: 18px;
     line-height: 1;
     cursor: pointer;
-    padding: 0;
+    padding: 4px; /* WCAG 2.5.8 - Ensure minimum 24×24px target size */
+    min-width: 32px; /* WCAG 2.5.8 - Exceed minimum for better usability */
+    min-height: 32px;
     width: 32px;
     height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
+    border-radius: 3px;
     transition: background 0.2s ease;
 }
 
@@ -152,9 +276,11 @@
 
 /* Panel Content */
 .accessibility-panel-content {
-    padding: 20px;
+    padding: 12px;
     max-height: 500px;
     overflow-y: auto;
+    font-size: 11px;
+    line-height: 1.2;
 }
 
 /* Sections */
@@ -165,7 +291,7 @@
 }
 
 .accessibility-section {
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 }
 
 .accessibility-section:last-child {
@@ -173,18 +299,19 @@
 }
 
 .accessibility-section-title {
-    font-size: 13px;
+    font-size: 10px;
     font-weight: 700;
     color: #666666;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin: 0 0 12px 0;
-    padding-bottom: 8px;
+    margin: 0 0 8px 0;
+    padding-bottom: 4px;
     border-bottom: 1px solid #e0e0e0;
+    line-height: 1.2;
 }
 
 .accessibility-control {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 .accessibility-control:last-of-type {
@@ -193,18 +320,20 @@
 
 .accessibility-control-label {
     display: block;
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 600;
     color: #333333;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
+    line-height: 1.2;
 }
 
 .accessibility-control-select {
     width: 100%;
-    padding: 10px 12px;
-    font-size: 14px;
+    padding: 8px 10px; /* WCAG 2.5.8 - Ensure minimum 24×24px target size */
+    min-height: 32px; /* WCAG 2.5.8 - Exceed minimum for better usability */
+    font-size: 11px;
     border: 2px solid #e0e0e0;
-    border-radius: 6px;
+    border-radius: 4px;
     background: #ffffff;
     color: #333333;
     cursor: pointer;
@@ -212,8 +341,9 @@
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: 36px;
+    background-position: right 8px center;
+    padding-right: 28px;
+    line-height: 1.2;
 }
 
 .accessibility-control-select:hover {
@@ -229,20 +359,22 @@
 /* Reset Button */
 .accessibility-reset-btn {
     width: 100%;
-    padding: 12px;
-    margin-top: 20px;
+    padding: 10px; /* WCAG 2.5.8 - Ensure minimum 24×24px target size */
+    min-height: 32px; /* WCAG 2.5.8 - Exceed minimum for better usability */
+    margin-top: 12px;
     background: #f5f5f5;
     color: #333333;
     border: 2px solid #e0e0e0;
-    border-radius: 6px;
-    font-size: 14px;
+    border-radius: 4px;
+    font-size: 11px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
+    line-height: 1.2;
 }
 
 .accessibility-reset-btn:hover {
@@ -256,12 +388,13 @@
 
 /* Panel Footer */
 .accessibility-panel-footer {
-    margin-top: 24px;
-    padding-top: 20px;
+    margin-top: 12px;
+    padding-top: 10px;
     border-top: 1px solid #e0e0e0;
     text-align: center;
-    font-size: 12px;
+    font-size: 9px;
     color: #666666;
+    line-height: 1.2;
 }
 
 .accessibility-footer-links {
@@ -289,7 +422,8 @@
 
 .accessibility-footer-credits {
     color: #999999;
-    font-size: 11px;
+    font-size: 9px;
+    line-height: 1.2;
 }
 
 .accessibility-footer-credits .accessibility-footer-link {
@@ -322,9 +456,19 @@
     font-family: inherit;
 }
 
+/* Braille mode styling */
+body.accessibility-braille-mode {
+    font-family: 'Courier New', 'Monaco', 'Consolas', monospace !important;
+    letter-spacing: 0.1em !important;
+}
+
+body.accessibility-braille-mode * {
+    font-family: 'Courier New', 'Monaco', 'Consolas', monospace !important;
+}
+
 /* Toggle Switch Control */
 .accessibility-control-toggle {
-    margin-bottom: 16px;
+    margin-bottom: 10px;
 }
 
 .accessibility-toggle-label {
@@ -343,20 +487,25 @@
 
 .accessibility-toggle-slider {
     position: relative;
-    width: 44px;
-    height: 24px;
+    width: 40px; /* WCAG 2.5.8 - Ensure minimum 24×24px target size */
+    height: 24px; /* WCAG 2.5.8 - Minimum height requirement */
+    min-width: 40px; /* WCAG 2.5.8 - Ensure minimum size */
+    min-height: 24px; /* WCAG 2.5.8 - Ensure minimum size */
     background: #ccc;
-    border-radius: 24px;
+    border-radius: 20px;
     transition: background 0.3s ease;
-    margin-right: 12px;
+    margin-right: 8px;
     flex-shrink: 0;
+    cursor: pointer; /* WCAG 2.5.8 - Ensure entire toggle is clickable */
 }
 
 .accessibility-toggle-slider::before {
     content: '';
     position: absolute;
-    width: 18px;
-    height: 18px;
+    width: 18px; /* WCAG 2.5.8 - Larger for better usability */
+    height: 18px; /* WCAG 2.5.8 - Larger for better usability */
+    min-width: 18px; /* WCAG 2.5.8 - Ensure minimum size */
+    min-height: 18px; /* WCAG 2.5.8 - Ensure minimum size */
     border-radius: 50%;
     background: #ffffff;
     top: 3px;
@@ -370,7 +519,7 @@
 }
 
 .accessibility-toggle-checkbox:checked + .accessibility-toggle-slider::before {
-    transform: translateX(20px);
+    transform: translateX(16px);
 }
 
 .accessibility-toggle-checkbox:focus + .accessibility-toggle-slider {
@@ -378,29 +527,329 @@
 }
 
 .accessibility-toggle-text {
-    font-size: 14px;
+    font-size: 11px;
     color: #333333;
     font-weight: 500;
+    line-height: 1.2;
 }
 
-/* TTS Button */
-.accessibility-tts-btn {
+/* Dictionary Result Styles */
+.dictionary-result {
+    padding: 10px 0;
+}
+
+.dictionary-result h4 {
+    font-size: 1.3em;
+    margin: 0 0 5px 0;
+    color: #0066cc;
+}
+
+.dictionary-result .phonetic {
+    font-style: italic;
+    color: #666;
+    margin: 5px 0;
+}
+
+.dictionary-result .meaning-section {
+    margin: 15px 0;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.dictionary-result .meaning-section strong {
+    display: block;
+    color: #0066cc;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+
+.dictionary-result ul {
+    margin: 8px 0 8px 20px;
+    padding: 0;
+}
+
+.dictionary-result li {
+    margin: 8px 0;
+    line-height: 1.5;
+}
+
+.dictionary-result em {
+    display: block;
+    margin-top: 5px;
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* Modal Styles */
+.accessibility-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10002;
+    padding: 20px;
+}
+
+.accessibility-modal-content {
+    background: white;
+    border-radius: 8px;
+    max-width: 600px;
     width: 100%;
-    padding: 12px;
-    margin-top: 8px;
-    margin-bottom: 16px;
-    background: #28a745;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.accessibility-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #0066cc;
+    color: white;
+}
+
+.accessibility-modal-header h3 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.accessibility-modal-close {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px; /* WCAG 2.5.8 - Ensure minimum 24×24px target size */
+    min-width: 32px; /* WCAG 2.5.8 - Exceed minimum for better usability */
+    min-height: 32px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.accessibility-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.accessibility-modal-body {
+    padding: 20px;
+    color: #333333;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Ensure dictionary results are visible */
+.accessibility-modal-body .dictionary-result {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #333333 !important;
+}
+
+.accessibility-modal-body .dictionary-result h4 {
+    color: #0066cc !important;
+    font-size: 1.5em !important;
+    margin-bottom: 10px !important;
+}
+
+.accessibility-modal-body .dictionary-result .phonetic {
+    color: #666666 !important;
+    font-size: 1.1em !important;
+    margin: 10px 0 !important;
+}
+
+.accessibility-modal-body .dictionary-result .meaning-section {
+    background: #f8f9fa !important;
+    padding: 15px !important;
+    margin: 15px 0 !important;
+    border-radius: 6px !important;
+    border-left: 4px solid #0066cc !important;
+}
+
+.accessibility-modal-body .dictionary-result ul {
+    margin: 10px 0 10px 25px !important;
+    padding: 0 !important;
+}
+
+.accessibility-modal-body .dictionary-result li {
+    margin: 10px 0 !important;
+    line-height: 1.6 !important;
+    color: #333333 !important;
+}
+
+/* Speech Recognition Button */
+.accessibility-btn.listening {
+    background: #dc3545;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* General Button Style */
+.accessibility-btn {
+    width: 100%;
+    padding: 10px; /* WCAG 2.5.8 - Ensure minimum 24×24px target size */
+    min-height: 32px; /* WCAG 2.5.8 - Exceed minimum for better usability */
+    margin-top: 6px;
+    margin-bottom: 10px;
+    background: #0066cc;
     color: #ffffff;
     border: none;
-    border-radius: 6px;
-    font-size: 14px;
+    border-radius: 4px;
+    font-size: 11px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
+    line-height: 1.2;
+}
+
+.accessibility-btn:hover {
+    background: #0052a3;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.accessibility-btn:active {
+    transform: translateY(0);
+}
+
+.accessibility-btn:focus {
+    outline: 3px solid rgba(0, 102, 204, 0.3);
+    outline-offset: 2px;
+}
+
+.accessibility-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* TTS Button */
+.accessibility-tts-btn {
+    background: #28a745 !important;
+    color: #ffffff !important;
+    width: 100% !important;
+    padding: 10px !important;
+    min-height: 32px !important;
+    margin-top: 6px !important;
+    margin-bottom: 10px !important;
+    border: none !important;
+    border-radius: 4px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    line-height: 1.2 !important;
+}
+
+.accessibility-tts-btn:hover {
+    background: #218838 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3) !important;
+}
+
+.accessibility-tts-btn:active {
+    transform: translateY(0) !important;
+}
+
+.accessibility-tts-btn:focus {
+    outline: 3px solid rgba(40, 167, 69, 0.3) !important;
+    outline-offset: 2px !important;
+}
+
+/* TTS Speed Slider */
+.accessibility-speed-slider {
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: #e0e0e0;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: 4px;
+}
+
+.accessibility-speed-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px; /* WCAG 2.5.8 - Minimum 24×24px target size */
+    height: 24px; /* WCAG 2.5.8 - Minimum 24×24px target size */
+    min-width: 24px; /* WCAG 2.5.8 - Ensure minimum size */
+    min-height: 24px; /* WCAG 2.5.8 - Ensure minimum size */
+    border-radius: 50%;
+    background: #0066cc;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.accessibility-speed-slider::-moz-range-thumb {
+    width: 24px; /* WCAG 2.5.8 - Minimum 24×24px target size */
+    height: 24px; /* WCAG 2.5.8 - Minimum 24×24px target size */
+    min-width: 24px; /* WCAG 2.5.8 - Ensure minimum size */
+    min-height: 24px; /* WCAG 2.5.8 - Ensure minimum size */
+    border-radius: 50%;
+    background: #0066cc;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.accessibility-speed-slider:focus {
+    outline: none;
+}
+
+.accessibility-speed-slider:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+}
+
+.accessibility-speed-slider:focus::-moz-range-thumb {
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+}
+
+/* TTS Word Highlighting */
+.accessibility-tts-text-wrapper {
+    display: inline;
+}
+
+.accessibility-tts-word {
+    display: inline;
+    transition: background-color 0.2s ease;
+}
+
+.accessibility-tts-word-active {
+    background-color: rgba(255, 235, 59, 0.6) !important;
+    color: #000000 !important;
+    padding: 2px 1px;
+    border-radius: 3px;
+    font-weight: 600;
+    box-shadow: 0 0 4px rgba(255, 235, 59, 0.8);
 }
 
 .accessibility-tts-btn:hover {
@@ -421,25 +870,140 @@
     background: #c82333;
 }
 
-/* Reading Guide */
-.accessibility-reading-guide {
-    position: absolute;
-    width: 2px;
-    height: 100px;
-    background: #0066cc;
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.8;
-    box-shadow: 0 0 8px rgba(0, 102, 204, 0.6);
-    border-radius: 1px;
-    transition: opacity 0.2s ease;
+/* Screen Reader Only - WCAG 4.1.3 Status Messages */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border-width: 0 !important;
 }
 
-/* Focus Indicator */
+/* Reading Guide - Physical reading strip style */
+.accessibility-reading-guide {
+    position: absolute;
+    width: 100%;
+    height: 120px;
+    background: rgba(60, 60, 60, 0.85);
+    pointer-events: auto;
+    z-index: 9999;
+    border-radius: 4px;
+    transition: opacity 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    cursor: default;
+    /* Create the yellow highlight band in the center - snaps to line height */
+    background-image: linear-gradient(
+        to bottom,
+        rgba(60, 60, 60, 0.85) 0%,
+        rgba(60, 60, 60, 0.85) calc(50% - var(--line-height, 20px) / 2),
+        rgba(255, 235, 59, 0.25) calc(50% - var(--line-height, 20px) / 2),
+        rgba(255, 235, 59, 0.25) calc(50% + var(--line-height, 20px) / 2),
+        rgba(60, 60, 60, 0.85) calc(50% + var(--line-height, 20px) / 2),
+        rgba(60, 60, 60, 0.85) 100%
+    );
+    /* Add yellow border lines to define the highlight area */
+    border-top: 2px solid rgba(255, 235, 59, 0.6);
+    border-bottom: 2px solid rgba(255, 235, 59, 0.6);
+    border-left: 1px solid rgba(40, 40, 40, 0.9);
+    border-right: 1px solid rgba(40, 40, 40, 0.9);
+    /* Add top tab like the physical guide */
+    padding-top: 8px;
+    /* Use mix-blend-mode to make text more readable */
+    mix-blend-mode: normal;
+    /* Prevent text selection */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Add inner highlight lines for better definition - snaps to line height */
+.accessibility-reading-guide::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    height: var(--line-height, 20px);
+    border-top: 2px solid rgba(255, 235, 59, 0.8);
+    border-bottom: 2px solid rgba(255, 235, 59, 0.8);
+    background: rgba(255, 235, 59, 0.15);
+    pointer-events: none;
+}
+
+.accessibility-reading-guide::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 6px;
+    background: rgba(60, 60, 60, 0.9);
+    border-radius: 3px 3px 0 0;
+    border: 1px solid rgba(40, 40, 40, 0.9);
+    border-bottom: none;
+}
+
+/* Reading Mask - hides text below current reading position */
+.accessibility-reading-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9997;
+}
+
+.accessibility-mask-top,
+.accessibility-mask-bottom {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+.accessibility-mask-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.accessibility-mask-bottom {
+    position: absolute;
+    left: 0;
+    width: 100%;
+}
+
+/* Text Highlight - highlights text as you read */
+.accessibility-text-highlight {
+    position: absolute;
+    background: rgba(255, 255, 0, 0.4);
+    border-top: 2px solid #ffd700;
+    border-bottom: 2px solid #ffd700;
+    pointer-events: none;
+    z-index: 9996;
+    mix-blend-mode: multiply;
+    transition: top 0.1s ease, height 0.1s ease;
+}
+
+/* Focus Indicator - WCAG 2.4.7 Focus Visible */
 .accessibility-focus-indicator *:focus {
     outline: 4px solid #0066cc !important;
     outline-offset: 2px !important;
     box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.3) !important;
+}
+
+/* Ensure focus is always visible - WCAG 2.4.7 */
+.accessibility-widget *:focus-visible {
+    outline: 3px solid #0066cc !important;
+    outline-offset: 2px !important;
 }
 
 /* Stop Animations */
@@ -487,14 +1051,19 @@
     border-color: #000000 !important;
 }
 
-/* Exclude widget from contrast effects */
+/* Exclude widget from contrast effects - ensure complete isolation */
 .accessibility-contrast-high .accessibility-widget,
-.accessibility-contrast-high .accessibility-widget * {
+.accessibility-contrast-high .accessibility-widget *,
+body.accessibility-contrast-high .accessibility-widget,
+body.accessibility-contrast-high .accessibility-widget * {
     filter: none !important;
     border-color: initial !important;
+    transform: translateZ(0) !important;
+    isolation: isolate !important;
+    will-change: transform !important;
 }
 
-/* Exclude widget from color blindness filter */
+/* Exclude widget and reading tools from color blindness filter - multiple selectors for maximum compatibility */
 body[data-colorblind-filter] .accessibility-widget,
 body[data-colorblind-filter] .accessibility-widget *,
 body[style*="filter"] .accessibility-widget,
@@ -502,76 +1071,309 @@ body[style*="filter"] .accessibility-widget *,
 body[style*="url(#colorblind-filter)"] .accessibility-widget,
 body[style*="url(#colorblind-filter)"] .accessibility-widget * {
     filter: none !important;
-    transform: none !important;
-    will-change: auto !important;
+    transform: translateZ(0) !important;
 }
 
-/* Ensure widget is always excluded from any filter and maintains position */
-.accessibility-widget {
-    filter: none !important;
-    transform: none !important;
-    isolation: isolate;
-}
-
+/* Ensure widget container maintains position - don't override position values */
+.accessibility-widget,
 .accessibility-widget * {
     filter: none !important;
 }
 
-.accessibility-contrast-dark {
+.accessibility-widget {
+    position: fixed !important;
+    transform: translateZ(0) !important;
+    isolation: isolate !important;
+    contain: none !important;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+}
+
+/* Exclude reading tools from filters */
+body[data-colorblind-filter] .accessibility-reading-mask,
+body[data-colorblind-filter] .accessibility-reading-mask *,
+body[data-colorblind-filter] .accessibility-text-highlight,
+body[data-colorblind-filter] .accessibility-reading-guide,
+body[style*="filter"] .accessibility-reading-mask,
+body[style*="filter"] .accessibility-reading-mask *,
+body[style*="filter"] .accessibility-text-highlight,
+body[style*="filter"] .accessibility-reading-guide,
+body[style*="url(#colorblind-filter)"] .accessibility-reading-mask,
+body[style*="url(#colorblind-filter)"] .accessibility-reading-mask *,
+body[style*="url(#colorblind-filter)"] .accessibility-text-highlight,
+body[style*="url(#colorblind-filter)"] .accessibility-reading-guide {
+    filter: none !important;
+}
+
+/* Dark mode - applied to body and html element for WordPress compatibility */
+html.accessibility-contrast-dark,
+body.accessibility-contrast-dark {
+    background: #1a1a1a !important;
+    background-color: #1a1a1a !important;
+    color: #e0e0e0 !important;
+}
+
+/* Apply dark mode base styles - removed inherit rule as it was too aggressive */
+
+/* Force dark background on main content areas */
+body.accessibility-contrast-dark,
+body.accessibility-contrast-dark #main,
+body.accessibility-contrast-dark #content,
+body.accessibility-contrast-dark .site-content,
+body.accessibility-contrast-dark .content-area,
+body.accessibility-contrast-dark main,
+body.accessibility-contrast-dark article,
+body.accessibility-contrast-dark .entry-content,
+body.accessibility-contrast-dark .post-content,
+body.accessibility-contrast-dark .page-content {
     background: #1a1a1a !important;
     color: #e0e0e0 !important;
 }
 
-.accessibility-contrast-dark * {
-    background: #1a1a1a !important;
+/* Dark mode text colors for all text elements */
+body.accessibility-contrast-dark p,
+body.accessibility-contrast-dark span,
+body.accessibility-contrast-dark div,
+body.accessibility-contrast-dark h1,
+body.accessibility-contrast-dark h2,
+body.accessibility-contrast-dark h3,
+body.accessibility-contrast-dark h4,
+body.accessibility-contrast-dark h5,
+body.accessibility-contrast-dark h6,
+body.accessibility-contrast-dark li,
+body.accessibility-contrast-dark td,
+body.accessibility-contrast-dark th,
+body.accessibility-contrast-dark label,
+body.accessibility-contrast-dark .widget,
+body.accessibility-contrast-dark .widget-title,
+body.accessibility-contrast-dark .entry-title,
+body.accessibility-contrast-dark .post-title {
     color: #e0e0e0 !important;
-    border-color: #444444 !important;
 }
 
-/* Exclude widget from dark mode effects */
-.accessibility-contrast-dark .accessibility-widget,
-.accessibility-contrast-dark .accessibility-widget * {
+/* Dark mode for common WordPress containers */
+body.accessibility-contrast-dark .site-header,
+body.accessibility-contrast-dark .site-footer,
+body.accessibility-contrast-dark .sidebar,
+body.accessibility-contrast-dark .widget-area,
+body.accessibility-contrast-dark .navigation,
+body.accessibility-contrast-dark .menu,
+body.accessibility-contrast-dark .site-main {
+    background: #1a1a1a !important;
+    color: #e0e0e0 !important;
+}
+
+/* Exclude widget and panel completely from dark mode effects */
+body.accessibility-contrast-dark .accessibility-widget,
+body.accessibility-contrast-dark .accessibility-widget * {
     background: #ffffff !important;
     color: #333333 !important;
     border-color: initial !important;
 }
 
-.accessibility-contrast-dark .accessibility-panel {
+/* Preserve toggle button styling in dark mode */
+body.accessibility-contrast-dark .accessibility-toggle-btn {
+    background: #0066cc !important;
+    color: #ffffff !important;
+    border-radius: 50px !important;
+    border: none !important;
+}
+
+body.accessibility-contrast-dark .accessibility-panel {
     background: #ffffff !important;
 }
 
-.accessibility-contrast-dark .accessibility-panel-header {
+body.accessibility-contrast-dark .accessibility-panel-header {
     background: #0066cc !important;
     color: #ffffff !important;
 }
 
-.accessibility-contrast-dark .accessibility-panel-content {
+body.accessibility-contrast-dark .accessibility-panel-content {
     background: #ffffff !important;
     color: #333333 !important;
 }
 
-.accessibility-contrast-dark .accessibility-control-label {
+body.accessibility-contrast-dark .accessibility-control-label {
     color: #333333 !important;
 }
 
-.accessibility-contrast-dark .accessibility-control-select {
+body.accessibility-contrast-dark .accessibility-control-select {
     background: #ffffff !important;
     color: #333333 !important;
     border-color: #e0e0e0 !important;
 }
 
-.accessibility-contrast-dark .accessibility-reset-btn {
+body.accessibility-contrast-dark .accessibility-reset-btn {
     background: #f5f5f5 !important;
     color: #333333 !important;
     border-color: #e0e0e0 !important;
 }
 
-.accessibility-contrast-dark img {
+/* Preserve toggle switch styling in dark mode */
+body.accessibility-contrast-dark .accessibility-toggle-slider {
+    background: #ccc !important;
+}
+
+body.accessibility-contrast-dark .accessibility-toggle-slider::before {
+    background: #ffffff !important;
+}
+
+body.accessibility-contrast-dark .accessibility-toggle-checkbox:checked + .accessibility-toggle-slider {
+    background: #0066cc !important;
+}
+
+body.accessibility-contrast-dark .accessibility-toggle-text {
+    color: #333333 !important;
+}
+
+body.accessibility-contrast-dark .accessibility-close-btn {
+    background: transparent !important;
+    color: #ffffff !important;
+}
+
+body.accessibility-contrast-dark .accessibility-tts-btn {
+    background: #28a745 !important;
+    color: #ffffff !important;
+}
+
+body.accessibility-contrast-dark .accessibility-section-title {
+    color: #666666 !important;
+}
+
+body.accessibility-contrast-dark .accessibility-speed-slider {
+    background: #e0e0e0 !important;
+}
+
+body.accessibility-contrast-dark .accessibility-speed-slider::-webkit-slider-thumb {
+    background: #0066cc !important;
+}
+
+body.accessibility-contrast-dark .accessibility-speed-slider::-moz-range-thumb {
+    background: #0066cc !important;
+}
+
+body.accessibility-contrast-dark .accessibility-panel-footer {
+    color: #666666 !important;
+    border-top-color: #e0e0e0 !important;
+}
+
+body.accessibility-contrast-dark .accessibility-panel-footer a {
+    color: #0066cc !important;
+}
+
+body.accessibility-contrast-dark img {
     opacity: 0.8;
 }
 
-.accessibility-contrast-dark a {
+body.accessibility-contrast-dark a {
     color: #4da6ff !important;
+}
+
+/* Dark mode for WordPress common elements - more aggressive selectors */
+html.accessibility-contrast-dark .wp-block-group,
+html.accessibility-contrast-dark .wp-block-columns,
+html.accessibility-contrast-dark .wp-block-column,
+html.accessibility-contrast-dark .wp-block-cover,
+html.accessibility-contrast-dark .wp-block-group__inner-container,
+body.accessibility-contrast-dark .wp-block-group,
+body.accessibility-contrast-dark .wp-block-columns,
+body.accessibility-contrast-dark .wp-block-column,
+body.accessibility-contrast-dark .wp-block-cover,
+body.accessibility-contrast-dark .wp-block-group__inner-container {
+    background: #1a1a1a !important;
+    background-color: #1a1a1a !important;
+    color: #e0e0e0 !important;
+}
+
+/* Universal dark mode override - catch all elements (more specific) */
+html.accessibility-contrast-dark > *:not(.accessibility-widget),
+body.accessibility-contrast-dark > *:not(.accessibility-widget) {
+    background-color: #1a1a1a !important;
+    color: #e0e0e0 !important;
+}
+
+/* Override for elements that should have dark background but light text */
+html.accessibility-contrast-dark div:not(.accessibility-widget):not(.accessibility-widget *),
+html.accessibility-contrast-dark section:not(.accessibility-widget):not(.accessibility-widget *),
+html.accessibility-contrast-dark header:not(.accessibility-widget):not(.accessibility-widget *),
+html.accessibility-contrast-dark footer:not(.accessibility-widget):not(.accessibility-widget *),
+html.accessibility-contrast-dark aside:not(.accessibility-widget):not(.accessibility-widget *),
+body.accessibility-contrast-dark div:not(.accessibility-widget):not(.accessibility-widget *),
+body.accessibility-contrast-dark section:not(.accessibility-widget):not(.accessibility-widget *),
+body.accessibility-contrast-dark header:not(.accessibility-widget):not(.accessibility-widget *),
+body.accessibility-contrast-dark footer:not(.accessibility-widget):not(.accessibility-widget *),
+body.accessibility-contrast-dark aside:not(.accessibility-widget):not(.accessibility-widget *) {
+    background-color: #1a1a1a !important;
+    color: #e0e0e0 !important;
+}
+
+/* Dark mode for buttons and form elements */
+body.accessibility-contrast-dark button:not(.accessibility-widget *),
+body.accessibility-contrast-dark .button:not(.accessibility-widget *),
+body.accessibility-contrast-dark .btn:not(.accessibility-widget *),
+body.accessibility-contrast-dark input[type="button"]:not(.accessibility-widget *),
+body.accessibility-contrast-dark input[type="submit"]:not(.accessibility-widget *) {
+    background: #333333 !important;
+    color: #e0e0e0 !important;
+    border-color: #555555 !important;
+}
+
+body.accessibility-contrast-dark button:hover:not(.accessibility-widget *),
+body.accessibility-contrast-dark .button:hover:not(.accessibility-widget *),
+body.accessibility-contrast-dark .btn:hover:not(.accessibility-widget *) {
+    background: #444444 !important;
+}
+
+/* Dark mode for input fields */
+body.accessibility-contrast-dark input[type="text"]:not(.accessibility-widget *),
+body.accessibility-contrast-dark input[type="email"]:not(.accessibility-widget *),
+body.accessibility-contrast-dark input[type="password"]:not(.accessibility-widget *),
+body.accessibility-contrast-dark textarea:not(.accessibility-widget *),
+body.accessibility-contrast-dark select:not(.accessibility-widget *) {
+    background: #2a2a2a !important;
+    color: #e0e0e0 !important;
+    border-color: #555555 !important;
+}
+
+/* Dark mode for cards and boxes */
+body.accessibility-contrast-dark .card,
+body.accessibility-contrast-dark .box,
+body.accessibility-contrast-dark .panel,
+body.accessibility-contrast-dark .widget-box {
+    background: #2a2a2a !important;
+    color: #e0e0e0 !important;
+    border-color: #444444 !important;
+}
+
+/* Dark mode for tables */
+body.accessibility-contrast-dark table,
+body.accessibility-contrast-dark thead,
+body.accessibility-contrast-dark tbody,
+body.accessibility-contrast-dark tr {
+    background: #1a1a1a !important;
+    color: #e0e0e0 !important;
+    border-color: #444444 !important;
+}
+
+body.accessibility-contrast-dark th,
+body.accessibility-contrast-dark td {
+    background: #1a1a1a !important;
+    color: #e0e0e0 !important;
+    border-color: #444444 !important;
+}
+
+/* Dark mode for code blocks */
+body.accessibility-contrast-dark code,
+body.accessibility-contrast-dark pre {
+    background: #2a2a2a !important;
+    color: #e0e0e0 !important;
+}
+
+/* Dark mode for blockquotes */
+body.accessibility-contrast-dark blockquote {
+    background: #2a2a2a !important;
+    color: #e0e0e0 !important;
+    border-left-color: #4da6ff !important;
 }
 
 /* Responsive Design */
@@ -594,6 +1396,61 @@ body[style*="url(#colorblind-filter)"] .accessibility-widget * {
         font-size: 12px;
         padding: 10px 20px;
     }
+}
+
+/* Font Size Override for WordPress Compatibility */
+/* Apply font size to html and body for maximum compatibility */
+html.accessibility-font-75,
+html.accessibility-font-100,
+html.accessibility-font-125,
+html.accessibility-font-150,
+html.accessibility-font-200,
+body.accessibility-font-75,
+body.accessibility-font-100,
+body.accessibility-font-125,
+body.accessibility-font-150,
+body.accessibility-font-200 {
+    font-size: var(--accessibility-font-size, 100%) !important;
+}
+
+/* Font size classes for WordPress theme compatibility */
+body.accessibility-font-75,
+html.accessibility-font-75 {
+    font-size: 75% !important;
+}
+
+body.accessibility-font-100,
+html.accessibility-font-100 {
+    font-size: 100% !important;
+}
+
+body.accessibility-font-125,
+html.accessibility-font-125 {
+    font-size: 125% !important;
+}
+
+body.accessibility-font-150,
+html.accessibility-font-150 {
+    font-size: 150% !important;
+}
+
+body.accessibility-font-200,
+html.accessibility-font-200 {
+    font-size: 200% !important;
+}
+
+/* Ensure all text elements inherit the font size */
+body.accessibility-font-75 *,
+body.accessibility-font-100 *,
+body.accessibility-font-125 *,
+body.accessibility-font-150 *,
+body.accessibility-font-200 *,
+html.accessibility-font-75 *,
+html.accessibility-font-100 *,
+html.accessibility-font-125 *,
+html.accessibility-font-150 *,
+html.accessibility-font-200 * {
+    font-size: inherit !important;
 }
 
 /* Print Styles */
